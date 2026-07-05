@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mutlu Doğum Günü!</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff7f9;
+    --accent:#ff6b98;
+    --accent-2:#ffb3c6;
+    --text:#333;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background:linear-gradient(180deg,var(--bg),#fff);
+    color:var(--text);
+    display:flex;
+    min-height:100vh;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .container{
+    width:100%;
+    max-width:980px;
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.08);
+    overflow:hidden;
+    position:relative;
+  }
+  header{
+    padding:28px;
+    text-align:center;
+    background:linear-gradient(90deg,var(--accent) 0%, var(--accent-2) 100%);
+    color:white;
+  }
+  header h1{margin:0;font-size:2rem;letter-spacing:0.5px}
+  header p{margin:8px 0 0;opacity:0.95}
+  .main{
+    display:grid;
+    grid-template-columns:1fr 360px;
+    gap:18px;
+    padding:22px;
+  }
+  .left{padding:12px}
+  .message{
+    background:linear-gradient(180deg,#fff 0%, #fff9fb 100%);
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:16px;
+    font-size:1.05rem;
+  }
+  .countdown{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    margin:18px 0;
+  }
+  .countdown .item{
+    background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.6));
+    padding:12px 14px;
+    border-radius:10px;
+    min-width:72px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.05);
+  }
+  .item .n{font-weight:800;font-size:1.25rem;color:var(--accent)}
+  .slideshow{
+    border-radius:12px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 8px 30px rgba(0,0,0,0.06);
+    height:320px;
+    margin-bottom:8px;
+    background:#f6f6f8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .slides img{width:100%;height:320px;object-fit:cover;display:block}
+  .thumbs{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .thumbs img{
+    width:72px;height:48px;object-fit:cover;border-radius:6px;cursor:pointer;opacity:0.9;border:2px solid transparent;
+  }
+  .thumbs img.active{border-color:var(--accent);opacity:1}
+  .controls{display:flex;gap:8px;justify-content:center;margin-top:8px}
+  .btn{
+    background:var(--accent);
+    color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600
+  }
+  .right{padding:12px;display:flex;flex-direction:column;gap:12px;align-items:center}
+  .big-heart{font-size:5.5rem;color:var(--accent);line-height:1}
+  .play-music{display:flex;flex-direction:column;gap:10px;align-items:center;width:100%}
+  .small{font-size:0.9rem;color:#666}
+  footer{padding:14px;text-align:center;font-size:0.9rem;color:#666}
+  /* confetti pieces */
+  .confetti-piece{
+    position:fixed;z-index:9999;pointer-events:none;will-change:transform,opacity;
+  }
+
+  /* ENVELOPE */
+  .envelope-wrap{display:flex;justify-content:center;margin-bottom:18px}
+  .envelope{
+    width:360px;
+    max-width:90%;
+    height:220px;
+    position:relative;
+    perspective:900px;
+    cursor:pointer;
+  }
+  .env-body{
+    position:absolute;
+    width:100%;
+    height:70%;
+    bottom:0;
+    left:0;
+    background:#fff;
+    border:2px solid rgba(0,0,0,0.06);
+    border-radius:8px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    overflow:hidden;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    transition:transform 450ms cubic-bezier(.2,.8,.2,1);
+    z-index:1;
+  }
+  .env-flap{
+    position:absolute;
+    width:100%;
+    height:62%;
+    top:0;
+    left:0;
+    background:linear-gradient(180deg,#ffdfe9 0%, #ffbfcf 100%);
+    border:2px solid rgba(0,0,0,0.06);
+    border-bottom:0;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    transform-origin:center top;
+    transform:rotateX(0deg);
+    transition:transform 450ms cubic-bezier(.2,.8,.2,1);
+    z-index:2;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .env-seal{
+    width:56px;height:56px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;margin-bottom:18px;box-shadow:0 6px 14px rgba(0,0,0,0.12)
+  }
+  .paper{
+    position:absolute;
+    width:92%;
+    height:76%;
+    left:4%;
+    top:12%;
+    background:linear-gradient(180deg,#fff8fa,#fff);
+    border-radius:6px;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,0.02);
+    transform:translateY(0);
+    transition:transform 600ms cubic-bezier(.2,.8,.2,1);
+    z-index:0;
+    padding:18px 22px;
+    overflow:auto;
+  }
+  .envelope.open .env-flap{
+    transform:rotateX(-180deg);
+  }
+  .envelope.open .paper{
+    transform:translateY(-120%);
+  }
+  .letter-content{white-space:pre-wrap;font-size:0.98rem;color:#222;line-height:1.45}
+  /* SPOTIFY embed styling */
+  .spotify-embed{width:100%;max-width:320px;border-radius:12px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,0.06)}
+  .spotify-embed iframe{width:100%;height:80px;border:0;display:block}
+  /* responsive */
+  @media (max-width:880px){
+    .main{grid-template-columns:1fr; padding:16px}
+    .right{order:-1;flex-direction:row;justify-content:space-between;align-items:center}
+    .slideshow{height:220px}
+    .slides img{height:220px}
+    .envelope{height:200px}
+    .spotify-embed iframe{height:80px}
+    .thumbs img{width:60px;height:44px}
+  }
+</style>
+</head>
+<body>
+<div class="container" role="main">
+  <header>
+    <h1>Mutlu Doğum Günü, <span id="personName">[İsim]</span>!</h1>
+    <p id="subtitle">Sana özel küçük bir sürpriz sayfası 🎉</p>
+  </header>
+
+  <div class="main">
+    <div class="left">
+      <!-- Envelope -->
+      <div class="envelope-wrap">
+        <div class="envelope" id="envelope" aria-label="Doğum günü zarfı - tıklayın">
+          <div class="env-flap" aria-hidden="true">
+            <div class="env-seal">❤</div>
+          </div>
+          <div class="env-body" aria-hidden="true"></div>
+          <div class="paper" id="paper" role="region" aria-live="polite">
+            <div id="letterContent" class="letter-content"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slideshow -->
+      <div class="slideshow" aria-hidden="false">
+        <div class="slides" id="slides">
+          <!-- Görseller dinamiktir -->
+        </div>
+      </div>
+
+      <div class="thumbs" id="thumbs" aria-hidden="false">
+        <!-- küçük resimler buraya gelecek -->
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="prevBtn">Geri</button>
+        <button class="btn" id="nextBtn">İleri</button>
+      </div>
+
+      <div class="message" id="messageBox">
+        Sevgilim, nice mutlu yıllara! Seninle her günüm bir hediye. Bugünün tüm sürprizleri ve mutlulukları senin olsun. Seni çok seviyorum. ❤️
+      </div>
+
+      <div class="countdown" aria-live="polite">
+        <div class="item"><div class="n" id="days">00</div><div class="small">Gün</div></div>
+        <div class="item"><div class="n" id="hours">00</div><div class="small">Saat</div></div>
+        <div class="item"><div class="n" id="minutes">00</div><div class="small">Dakika</div></div>
+        <div class="item"><div class="n" id="seconds">00</div><div class="small">Saniye</div></div>
+      </div>
+
+      <div style="text-align:center;margin-top:8px">
+        <button class="btn" id="confettiBtn">Konfeti Başlat 🎊</button>
+        <button class="btn" id="wishBtn" style="background:#6b9cff">Sürpriz Mesaj Göster</button>
+      </div>
+    </div>
+
+    <aside class="right">
+      <div style="text-align:center">
+        <div class="big-heart">❤️</div>
+        <div class="small">Bugünden sonra birlikte daha nice güzel anlara...</div>
+      </div>
+
+      <div class="play-music" aria-hidden="false">
+        <button class="btn" id="playBtn">Spotify'a Git / Müzik Aç</button>
+        <div style="font-size:0.9rem;color:#555">Embed oynatıcı (Spotify)</div>
+
+        <!-- Spotify embed: buraya isteğe göre başka src koyabilirsiniz -->
+        <div id="spotifyContainer" class="spotify-embed" aria-hidden="false">
+          <iframe id="spotifyIframe" src="https://open.spotify.com/embed/track/7Ev847aM6udt8KQRyMUOkE?utm_source=generator&si=d9d9604234af497e" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <div style="width:100%;text-align:center">
+        <div style="font-size:0.9rem;color:#666;margin-top:6px">Fotoğrafları aşağıdaki küçük resimlere tıklayarak da değiştirebilirsiniz.</div>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    Bu sayfa <strong>sizin</strong> için hazırlandı — özelleştirmek isterseniz bana söyleyin!
+  </footer>
+</div>
+
+<!-- Audio: değiştirmek için music.mp3 dosyasını aynı klasöre koyun -->
+<audio id="bgMusic" src="music.mp3" loop preload="none"></audio>
+
+<script>
+/* ====== Kişiselleştirme (burayı değiştirin) ====== */
+const CONFIG = {
+  name: "Sevgilim",
+  subtitle: "Sana özel küçük bir sürpriz sayfası 🎉",
+  birthday: new Date(2026, 6-1, 20, 0, 0),
+  messageVisible: false,
+  // Buraya eklediğiniz 4 fotoğrafın dosya adları (aynı klasörde)
+  images: ["image1.jpg","image2.jpg","image3.jpg","image4.jpg"],
+  musicAutoplay: false,
+  spotifySrc: "https://open.spotify.com/embed/track/7Ev847aM6udt8KQRyMUOkE?utm_source=generator&si=d9d9604234af497e",
+  letterText: `Bebeğiimmmmmmmm ![❤️] 23. yaş günün kutlu olsunnn. Benden uzakta geçirdiğin ilk ve umarım tek doğum günün bu... Geçen yıl da tam anlamıyla yanında olamamıştım ama bu yıl yanında olmayı o kadar çok isterdim kiii... Sana sarılıp doğum gününü ilk ben kutlamak, yüzünü görmek, o güzel gülüşünü izlemek isterdimmm ama şimdilik bunu sana küçük bir sürprizle hissettirmeye çalışıyorum. Kocamla yaşıt olduğumm sadeceee 3 ay varrr. Yazmaya nereden başlayacağımı gerçekten bilmiyorum kocammmm çünkü seninle geçen bu koca bir yılda birkaç paragrafa sığdırmak çok zor. Ama şunu biliyorum ömrümdeki en güzel yıllardan biri seninle geçti. Birlikte o kadar çok şey yaşadık ki... İyi günlerimiz oldu, kötü günlerimiz oldu, stresli zamanlarımız oldu, yorulduğumuz günler oldu, çok heyecanlandığımız anlar oldu, kahkahalar attığımız zamanlar oldu... Ama dönüp baktığımda hiçbirini değiştirmek istememmm çünkü hepsinde sen vardınnn bebeğiimm. Seni tanımak, seni bilmek, seni sevmek ve en önemlisi biz olabilmek bana dünyanın en güzel hislerinden birini yaşatıyor. ... (mektubunuz burada devam ediyor)`,
+};
+/* ================================================== */
+
+document.getElementById('personName').textContent = CONFIG.name;
+document.getElementById('subtitle').textContent = CONFIG.subtitle;
+document.getElementById('messageBox').style.display = CONFIG.messageVisible ? 'block' : 'none';
+
+// Populate letter content (preserve line breaks)
+const letterEl = document.getElementById('letterContent');
+letterEl.innerHTML = CONFIG.letterText.replace(/\n/g, '<br>');
+
+// Envelope open/close
+const envelope = document.getElementById('envelope');
+envelope.addEventListener('click', ()=> {
+  envelope.classList.toggle('open');
+  if(envelope.classList.contains('open')){
+    setTimeout(()=> document.getElementById('paper').focus(), 500);
+    makeConfetti();
+  }
+});
+
+// Slideshow with thumbnails
+let slideIndex = 0;
+const slidesEl = document.getElementById('slides');
+const thumbsEl = document.getElementById('thumbs');
+
+function renderSlides(){
+  slidesEl.innerHTML = '';
+  thumbsEl.innerHTML = '';
+  CONFIG.images.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = "Foto " + (i+1);
+    img.style.display = i===slideIndex ? 'block' : 'none';
+    slidesEl.appendChild(img);
+
+    const t = document.createElement('img');
+    t.src = src;
+    t.alt = "Thumb " + (i+1);
+    if(i===slideIndex) t.classList.add('active');
+    t.addEventListener('click', ()=> {
+      showSlide(i);
+    });
+    thumbsEl.appendChild(t);
+  });
+}
+function showSlide(n){
+  slideIndex = (n + CONFIG.images.length) % CONFIG.images.length;
+  const imgs = slidesEl.querySelectorAll('img');
+  const thumbs = thumbsEl.querySelectorAll('img');
+  imgs.forEach((img,i)=> img.style.display = i===slideIndex ? 'block' : 'none');
+  thumbs.forEach((th,i)=> {
+    if(i===slideIndex) th.classList.add('active'); else th.classList.remove('active');
+  });
+}
+renderSlides();
+
+document.getElementById('prevBtn').addEventListener('click', ()=> { showSlide(slideIndex-1); });
+document.getElementById('nextBtn').addEventListener('click', ()=> { showSlide(slideIndex+1); });
+
+// Countdown
+function updateCountdown(){
+  const now = new Date();
+  let target = CONFIG.birthday;
+  if(now > target){
+    target = new Date(target.getFullYear()+1, target.getMonth(), target.getDate(), target.getHours(), target.getMinutes());
+  }
+  const diff = target - now;
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  document.getElementById('days').textContent = String(days).padStart(2,'0');
+  document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('minutes').textContent = String(minutes).padStart(2,'0');
+  document.getElementById('seconds').textContent = String(seconds).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// Music controls (opens/focuses Spotify iframe)
+const spotifyIframe = document.getElementById('spotifyIframe');
+if(CONFIG.spotifySrc){
+  spotifyIframe.src = CONFIG.spotifySrc;
+}
+document.getElementById('playBtn').addEventListener('click', ()=>{
+  document.getElementById('spotifyContainer').scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=> spotifyIframe.focus(), 600);
+});
+
+// Confetti
+function makeConfetti(){
+  const colors = ["#ff6b98","#ffd166","#6bffb3","#6b9cff","#b86bff"];
+  for(let i=0;i<80;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const w = Math.random()*12+6;
+    el.style.width = w+'px';
+    el.style.height = (w*0.6)+'px';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.top = (-20 - Math.random()*20) + 'vh';
+    el.style.opacity = Math.random()*0.9+0.3;
+    el.style.transform = 'rotate('+ (Math.random()*360) +'deg)';
+    document.body.appendChild(el);
+
+    const duration = 3000 + Math.random()*3000;
+    el.animate([
+      { transform: `translateY(0) rotate(${Math.random()*360}deg)`, opacity: el.style.opacity },
+      { transform: `translateY(${80+Math.random()*60}vh) rotate(${Math.random()*720}deg)`, opacity: 0.8 }
+    ], { duration: duration, easing: 'cubic-bezier(.2,.7,.2,1)'});
+    setTimeout(()=> el.remove(), duration+50);
+  }
+}
+document.getElementById('confettiBtn').addEventListener('click', ()=> {
+  makeConfetti();
+});
+
+// Sürpriz mesaj toggle (mesaj kutusunu göster/gizle)
+document.getElementById('wishBtn').addEventListener('click', ()=> {
+  const mb = document.getElementById('messageBox');
+  if(mb.style.display === 'none' || mb.style.display === ''){
+    mb.style.display = 'block';
+    makeConfetti();
+  } else {
+    mb.style.display = 'none';
+  }
+});
+
+// Helper: eğer hiç görsel yoksa yer tutucu
+if(!CONFIG.images || CONFIG.images.length===0){
+  CONFIG.images = ["https://via.placeholder.com/720x480?text=Fotoğraf+ekleyin"];
+  renderSlides();
+}
+
+// Accessibility: allow Enter key to toggle envelope when focused
+envelope.tabIndex = 0;
+envelope.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' || e.key === ' '){
+    e.preventDefault();
+    envelope.click();
+  }
+});
+</script>
+</body>
+</html>
